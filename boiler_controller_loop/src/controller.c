@@ -1,6 +1,9 @@
 
+#include "controller.h"
 
-void controller_init() {
+
+
+void controller_init(void) {
 	
 }
 

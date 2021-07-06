@@ -1,5 +1,10 @@
 # Boiler controller (cyclic executive implementation)
 
+### Usage:
+
+For development: `make && ./build/runner`
+For deployment: `(java -jar boiler_emulator/boiler_emulator.jar 8000 &) && make && (./build/runner localhost 8000)`
+
 
 ### Description:
 
@@ -42,7 +47,7 @@ Outros requisitos:
 - Atualização da tela pode ser aproximadamente a cada 1 segundo.
 
 
-### Report
+### Report:
 
 Partindo do programa controlador desenvolvido, meça o tempo de resposta do controle de temperatura.
 

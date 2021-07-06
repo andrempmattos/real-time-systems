@@ -1,7 +1,7 @@
 CC := gcc
 SRCDIR := src
 BUILDDIR := build
-TARGET := bin/runner
+TARGET := build/runner
  
 SRCEXT := c
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))

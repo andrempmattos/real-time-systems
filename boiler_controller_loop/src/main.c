@@ -1,14 +1,24 @@
 
 
+#include "controller.h"
+#include "timer.h"
+#include "udp_client.h"
+
+#include <stdio.h>
 
 
+int main(int argc, char const *argv[]) {
 
-controller_init();
+	controller_init();
 
-udp_init();
+	udp_init();
 
-timer_init();
+	timer_init();
 
-void main(int argc, char const *argv[]) {
+
+	while(1) {
+	printf("running!\n");
+		//return 0;
+	}
 
 }
