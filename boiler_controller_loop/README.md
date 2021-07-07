@@ -23,15 +23,15 @@ Simulador é usado para simular uma unidade de caldeira e é chamado com:
 java -jar aquecedor2008_1.jar <número-porta-escutada>
 
 A caldeira possui instrumentação embutida e aceita os seguintes comandos:
-"sta0" lê valor de Ta
-"st-0" lê valor de T
-"sti0" lê valor de Ti
-"sno0" lê valor de No
-"sh-0" lê valor de H
-"ani123.4" define valor de Ni como 123.4
-"aq-567.8" define valor de Q como 567.8
-"ana123.4" define valor de Na como 123.4
-"anf123.4" define valor de Nf como 123.4
+- "sta0" lê valor de Ta
+- "st-0" lê valor de T
+- "sti0" lê valor de Ti
+- "sno0" lê valor de No
+- "sh-0" lê valor de H
+- "ani123.4" define valor de Ni como 123.4
+- "aq-567.8" define valor de Q como 567.8
+- "ana123.4" define valor de Na como 123.4
+- "anf123.4" define valor de Nf como 123.4
 
 Cuidado com a formatação dos valores em ponto flutuante.
 
