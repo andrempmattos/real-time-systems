@@ -52,7 +52,7 @@ float get_sensor(char *sensor) {
     send_message(sensor);
     received_size = receive_message(buffer);
 
-    if (received_size > 0) {
+    if(received_size > 0) {
         buffer[received_size] = '\0';
         memcpy(buffer, buffer+3, received_size+1-3); 
         value = atof(buffer);
@@ -68,6 +68,8 @@ void set_actuator(float value, char *actuator) {
 	
     char buffer[MAX_BUFFER_SIZE];
     char value_buffer[12];
+    int received_size = 0;
+    float confirm_value = 0;
 
     sprintf(value_buffer, "%f", value); 
 
@@ -75,6 +77,16 @@ void set_actuator(float value, char *actuator) {
     strcat(buffer, value_buffer); 
     
     send_message(buffer);
+    received_size = receive_message(buffer);
+
+    //if(received_size > 0) {
+    //    buffer[received_size] = '\0';
+    //    memcpy(buffer, buffer+3, received_size+1-3); 
+    //    confirm_value = atof(buffer);
+    //}
+    //if(value != confirm_value) {
+    //    printf("Server did not receive the correct command!\n");
+    //}
 }
 
 /** \} End of controller group */
