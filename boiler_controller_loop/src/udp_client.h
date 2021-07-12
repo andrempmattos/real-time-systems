@@ -20,9 +20,10 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_BUFFER_SIZE		100
-#define READ_TIMEOUT_US		1
+#define READ_TIMEOUT_US		20
 
 #define SERVER_ADDRESS		"localhost"
 #define SERVER_PORT			8000
