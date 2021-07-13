@@ -105,6 +105,7 @@ void task_controller(void) {
 void task_user_info(void) {
 	printf("Loop cycle: %d \n", cycle/TICKS_TO_1_SECOND);
 	printf("Boiler water temperature: %f \n", boiler_water_temp);
+	printf("Boiler water height: %f \n", get_sensor(BOILER_WATER_HEIGHT_SENSOR));
 }
 
 void task_logger_file(void) {
