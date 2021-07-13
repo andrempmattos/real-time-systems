@@ -67,7 +67,7 @@ float get_sensor(char *sensor) {
 void set_actuator(float value, char *actuator) {
 	
     char buffer[MAX_BUFFER_SIZE];
-    char value_buffer[12];
+    char value_buffer[30];
     int received_size = 0;
     float confirm_value = 0;
 
