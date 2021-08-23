@@ -14,9 +14,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define NSEC_PER_SEC    1000000000 		   /**< The number of nanoseconds per second. */
-#define SYS_TICK    	  30000000         /**< System tick time (30ms). */
-#define TICKS_TO_1_SECOND       33         /**< Amount of ticks to complete a cycle of 1 second of duration. */
+#define NSEC_PER_SEC    1000000000      /**< The number of nanoseconds per second. */
+#define NSEC_PER_MSEC   1000000         /**< The number of nanoseconds per millisecond. */
+
+#define CONVERT_MS_TO_NS(value_ms)  ((long)value_ms * NSEC_PER_MSEC)
 
 /**
  * \brief Timer abstraction initialization.
