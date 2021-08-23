@@ -8,20 +8,29 @@
  */
 
 #include <stdio.h>
+#include <pthread.h>
 
 #include "controller.h"
 #include "udp_client.h"
 #include "timer.h"
 #include "logger.h"
 
-void task_init(void);
-void task_temp_controller(void);
-void task_level_controller(void);
-void task_warning_alarm(void);
-void task_user_input(void);
-void task_user_info(void);
-void task_logger_file(void);
-	
+void system_init(void);
+void thread_temp_controller(void);
+void thread_level_controller(void);
+void thread_warning_alarm(void);
+void thread_user_input(void);
+void thread_user_info(void);
+void thread_logger_file(void);
+
+/* Threads handlers */
+pthread_t thread_temp_controller_handler;
+pthread_t thread_level_controller_handler;
+pthread_t thread_warning_alarm_handler;
+pthread_t thread_user_input_handler;
+pthread_t thread_user_info_handler;
+pthread_t thread_logger_file_handler;
+
 /* Cycle counter variable to keep track of periodic events */
 int cycle;
 
@@ -38,23 +47,23 @@ controller_t q_control;
 
 void main(void) {
 
-	task_init();
+	system_init();
 
 	/* Main loop (cyclic executive) */
 	while(1) {
 
 		/* 30ms, each cycle: Periodically run the controllers */
-		task_temp_controller();
-		task_level_controller();
+		thread_temp_controller();
+		thread_level_controller();
 
 		/* 1s, each TICKS_TO_1_SECOND cycles: Periodically prints user information */
 		if(!(cycle%TICKS_TO_1_SECOND)) {
-			task_user_info();
+			thread_user_info();
 		}
 
 		/* 30s, after buffer size achieved: Periodically save the logger session */
 		if((cycle%FILE_BUFFER_SIZE+1) >= FILE_BUFFER_SIZE) {
-			task_logger_file();
+			thread_logger_file();
 		}	
 
 		/* Increment cycle counter variable */
@@ -65,7 +74,14 @@ void main(void) {
 	}
 }
 
-void task_init(void) {
+void system_init(void) {
+
+	pthread_create(&thread_temp_controller_handler, NULL, (void *)thread_temp_controller, NULL);
+	pthread_create(&thread_level_controller_handler, NULL, (void *)thread_level_controller, NULL);
+	pthread_create(&thread_warning_alarm_handler, NULL, (void *)thread_warning_alarm, NULL);
+	pthread_create(&thread_user_input_handler, NULL, (void *)thread_user_input, NULL);
+	pthread_create(&thread_user_info_handler, NULL, (void *)thread_user_info, NULL);
+	pthread_create(&thread_logger_file_handler, NULL, (void *)thread_logger_file, NULL);
 
 	/* Boiler controllers initialization */
 	na_control = controller_init("Na", "temperature", 10.0, 0.0, 500.0, 0.5);
@@ -79,7 +95,7 @@ void task_init(void) {
 	timer_init();
 }
 
-void task_temp_controller(void) {
+void thread_temp_controller(void) {
 
 	/* Get sensor values */
 	boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
@@ -100,26 +116,26 @@ void task_temp_controller(void) {
 	set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
 }
 
-void task_level_controller(void) {
+void thread_level_controller(void) {
 
 }
 
-void task_warning_alarm(void) {
+void thread_warning_alarm(void) {
 
 }
 
-void task_user_input(void) {
+void thread_user_input(void) {
 
 }
 
-void task_user_info(void) {
+void thread_user_info(void) {
 	printf("Loop cycle: %d \n", cycle/TICKS_TO_1_SECOND);
 	printf("Boiler water temperature: %f \n", boiler_water_temp);
 	printf("Boiler water height: %f \n", get_sensor(BOILER_WATER_HEIGHT_SENSOR));
 }
 
-void task_logger_file(void) {
-	
+void thread_logger_file(void) {
+
 }
 
 /** \} End of main group */
