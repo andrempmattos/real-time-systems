@@ -15,32 +15,32 @@
 
 void user_interface_init(void) {
 
-    printf("Welcome to the boiler controller!\n\n");
+    printf("\nWelcome to the boiler controller!\n\n");
 
 	printf("The controller menu has the following options:\n");
 	printf("[0] enter [ref_temp] enter   -> to select the controller temperature set point \n");
 	printf("[1] enter [ref_height] enter -> to select the controller water height set point \n");    
-    printf("[s] -> to execute a clean exit procedure \n");
+    printf("[s] -> to execute a clean exit procedure \n\n");
 }
 
 void user_input_handler(void) {
 	
-	char *menu_input;
+	char menu_input;
 	float value_input;
 
-	scanf("%s", menu_input);
+	scanf("%s", &menu_input);
 
-	if(menu_input == TEMPERATURE_SET_POINT_COMMAND) {
+	if(strcmp(&menu_input, TEMPERATURE_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call temp set point update */
 	}
 
-	if(menu_input == HEIGHT_SET_POINT_COMMAND) {
+	if(strcmp(&menu_input, HEIGHT_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call height set point update */
 	}
 
-	if(menu_input == STOP_COMMAND) {
+	if(strcmp(&menu_input, STOP_COMMAND) == 0) {
 		/* Call clean termination procedure */
 	}
 }
