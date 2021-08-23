@@ -24,23 +24,24 @@ void user_interface_init(void) {
 }
 
 void user_input_handler(void) {
-	char menu_input;
+	
+	char *menu_input;
 	float value_input;
 
 	scanf("%s", menu_input);
 
-	switch(menu_input) {
-		case TEMPERATURE_SET_POINT_COMMAND:
-			scanf("%f", value_input);
-			/* Call temp set point update */			
-			break;
-		case HEIGHT_SET_POINT_COMMAND:
-			scanf("%f", value_input);
-			/* Call height set point update */
-			break;
-		case STOP_COMMAND:
-			/* Call clean termination procedure */
-			break;
+	if(menu_input == TEMPERATURE_SET_POINT_COMMAND) {
+		scanf("%f", &value_input);
+		/* Call temp set point update */
+	}
+
+	if(menu_input == HEIGHT_SET_POINT_COMMAND) {
+		scanf("%f", &value_input);
+		/* Call height set point update */
+	}
+
+	if(menu_input == STOP_COMMAND) {
+		/* Call clean termination procedure */
 	}
 }
 

@@ -11,9 +11,9 @@
 #ifndef USER_INTERFACE_H_
 #define USER_INTERFACE_H_
 
-#define TEMPERATURE_SET_POINT_COMMAND
-#define HEIGHT_SET_POINT_COMMAND
-#define STOP_COMMAND
+#define TEMPERATURE_SET_POINT_COMMAND   "0"
+#define HEIGHT_SET_POINT_COMMAND        "1"
+#define STOP_COMMAND                    "s" 
                                             
 void user_interface_init(void);
 void user_input_handler(void);

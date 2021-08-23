@@ -17,7 +17,11 @@
 #define THREAD_USER_INFO_PERIOD_MS              1000    /**< User info thread sleep period in ms. */
 #define THREAD_SESSION_LOGGER_PERIOD_MS         10000   /**< Temperature controller thread sleep period in ms. */   
 
-//#define THREADS_INIT_DELAY_MS                   100     /**< Threads init delay period in ms. */                                               
+//#define THREADS_INIT_DELAY_MS                   100     /**< Threads init delay period in ms. */     
+
+void threads_init(void);
+
+extern pthread_t thread_user_input_handler;                                          
 
 
 #endif /* THREADS_H_ */

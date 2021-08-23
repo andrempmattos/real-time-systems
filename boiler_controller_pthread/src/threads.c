@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <pthread.h>
 
 #include "threads.h"
@@ -34,14 +35,14 @@ pthread_t thread_session_logger_handler;
 
 void threads_init(void) {
 
-    status = 0;
+    int status = 0;
 
     status |= pthread_create(&thread_temp_controller_handler, NULL, (void *)thread_temp_controller, NULL);
     status |= pthread_create(&thread_level_controller_handler, NULL, (void *)thread_level_controller, NULL);
     status |= pthread_create(&thread_warning_alarm_handler, NULL, (void *)thread_warning_alarm, NULL);
     status |= pthread_create(&thread_user_input_handler, NULL, (void *)thread_user_input, NULL);
     status |= pthread_create(&thread_user_info_handler, NULL, (void *)thread_user_info, NULL);
-    status |= pthread_create(&thread_logger_file_handler, NULL, (void *)thread_logger_file, NULL);
+    status |= pthread_create(&thread_session_logger_handler, NULL, (void *)thread_session_logger, NULL);
 
     if (status != 0) {
         printf("CRITICAL: Error creating threads!\n");
