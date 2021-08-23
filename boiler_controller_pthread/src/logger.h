@@ -11,10 +11,10 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
-#define FILE_BUFFER_SIZE        1000
+#define FILE_BUFFER_SIZE        3000
 
-void logger_set_entry(void);
-void logger_get_entry(void);
+void logger_init(void);
+void logger_add_entry(char *entry, int entry_size);
 int logger_save_file(void);
 
 #endif /* LOGGER_H_ */

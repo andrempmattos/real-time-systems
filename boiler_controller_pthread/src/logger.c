@@ -10,50 +10,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "logger.h"
 
-#define NSEC_PER_SEC    1000000000         /* The number of nanoseconds per second. */
+char log_buffer[FILE_BUFFER_SIZE];
 
-long response_time_ns[FILE_BUFFER_SIZE];
-long last_cycle_s;
-long last_cycle_ns;
+void logger_init(void) {
 
-int buffer_index = 0;
-
-void logger_set_entry(void) {
-
-    struct timespec time;
-    
-    /* Get the current system time */
-    clock_gettime(CLOCK_MONOTONIC, &time);
-
-    last_cycle_s = (long)time.tv_sec; 
-    last_cycle_ns = (long)time.tv_nsec;
+    /* Create file with name report (overwrite previous). */
+    FILE *report = fopen("report/report.txt", "w");
+    fclose(report);
 }
 
-void logger_get_entry(void) {
-    
+void logger_add_entry(char *entry, int entry_size) {
+
+    int size = 0;
+    char buffer[100];
     struct timespec time;
     
     /* Get the current system time */
     clock_gettime(CLOCK_MONOTONIC, &time);
 
-    response_time_ns[buffer_index] = (((long)time.tv_sec - last_cycle_s) * NSEC_PER_SEC) + ((long)time.tv_nsec - last_cycle_ns);
-
-    /* Update variables for the next cycle */ 
-    if((++buffer_index) >= FILE_BUFFER_SIZE) {
-        /* Maximum buffer size achieved */
-        buffer_index = 0;
-    }
+    size = sprintf(buffer, "[%ld:%ld]: ", time.tv_sec, time.tv_nsec);
+    strcat(buffer, entry);
+    strcat(buffer, "\n");
+    strcat(log_buffer, buffer);
 }
 
 int logger_save_file(void) {
 
-    printf("\nStarting log file session!\n");
-
     /* Create file pointer. */
-    FILE *report = fopen("report/report.csv", "a");
+    FILE *report = fopen("report/report.txt", "a");
 
     /* Check if everything is ok. */
     if (!report) {
@@ -62,11 +50,10 @@ int logger_save_file(void) {
     }
 
     /* Write the report file with the log buffer */
-    for (int i = 0; i < FILE_BUFFER_SIZE; i++) {
-        fprintf(report, "%f\n", (float)(response_time_ns[i]));
-    }
-    
-    printf("Log file saved!\n\n");
+    fprintf(report, "%s", log_buffer);
+
+    /* Clear array */
+    memset(log_buffer, 0, FILE_BUFFER_SIZE);
 
     fclose(report);
     return 0;
