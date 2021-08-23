@@ -14,6 +14,9 @@
 #include "controller.h"
 #include "threads.h"
 
+/* Mutex handler */
+pthread_mutex_t socket_mut = PTHREAD_MUTEX_INITIALIZER;
+
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
 	controller_t cont = {
         .manipulated_variable = manipulated_variable,
@@ -47,7 +50,7 @@ float pi_algorithm(controller_t *cont, float reference, float control_variable) 
 
 float get_sensor(char *sensor) {
 
-    pthread_mutex_lock(&mut);
+    pthread_mutex_lock(&socket_mut);
 
     char buffer[MAX_BUFFER_SIZE]; 
     float value = 0;
@@ -65,14 +68,14 @@ float get_sensor(char *sensor) {
         printf("Get sensor value failed!\n");
     }
 
-    pthread_mutex_unlock(&mut);
+    pthread_mutex_unlock(&socket_mut);
 
     return value;
 }
 
 void set_actuator(float value, char *actuator) {
 
-    pthread_mutex_lock(&mut);
+    pthread_mutex_lock(&socket_mut);
 	
     char buffer[MAX_BUFFER_SIZE];
     char value_buffer[30];
@@ -87,7 +90,7 @@ void set_actuator(float value, char *actuator) {
     send_message(buffer);
     received_size = receive_message(buffer);
 
-    pthread_mutex_unlock(&mut);
+    pthread_mutex_unlock(&socket_mut);
 
     //if(received_size > 0) {
     //    buffer[received_size] = '\0';

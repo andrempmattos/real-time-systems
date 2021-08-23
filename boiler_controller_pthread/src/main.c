@@ -29,9 +29,6 @@ void system_init(void) {
 	/* Threads initialization */
 	threads_init();
 
-	/* Mutex initialization */
-	mutex_init();
-
 	/* Wait until user thread terminate */
 	pthread_join(thread_user_input_handler, NULL);
 }

@@ -33,8 +33,6 @@ pthread_t thread_user_input_handler;
 pthread_t thread_user_info_handler;
 pthread_t thread_session_logger_handler;
 
-/* Mutex handler */
-pthread_mutex_t mut;
 
 void threads_init(void) {
 
@@ -49,12 +47,6 @@ void threads_init(void) {
 
     if (status != 0) {
         printf("CRITICAL: Error creating threads!\n");
-    }
-}
-
-void mutex_init(void) {
-    if (pthread_mutex_init(&mut, NULL) != 0) {
-        printf("CRITICAL: mutex init failed!\n");
     }
 }
 
@@ -104,7 +96,6 @@ void thread_level_controller(void) {
         
         /* Get sensor values */
         boiler_water_height = get_sensor(BOILER_WATER_HEIGHT_SENSOR);
-        printf("Boiler water height test: %f \n", boiler_water_height);
 
         /* Get control action */
         control_ni = pi_algorithm(&ni_control, HEIGHT_SET_POINT, boiler_water_height);
