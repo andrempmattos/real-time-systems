@@ -90,9 +90,29 @@ void thread_temp_controller(void) {
 void thread_level_controller(void) {
 
     /* Initialization */
+    float boiler_water_height;
+
+    /* Variables to hold the controller structures for each control loop */
+    float control_ni, control_nf;
+
+    /* Boiler temperature controllers initialization */
+    controller_t ni_control = controller_init("Na", "height", 100.0, 0.0, 500.0, 0.1);
+    controller_t nf_control = controller_init("Nf", "height", 100.0, 0.0, -500.0, 0.1);
 
     while(1) {
-    
+        
+        /* Get sensor values */
+        boiler_water_height = get_sensor(BOILER_WATER_HEIGHT_SENSOR);
+        printf("Boiler water height test: %f \n", boiler_water_height);
+
+        /* Get control action */
+        control_ni = pi_algorithm(&ni_control, HEIGHT_SET_POINT, boiler_water_height);
+        control_nf = pi_algorithm(&nf_control, HEIGHT_SET_POINT, boiler_water_height);
+
+        /* Set actuators based on the control action */
+        set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
+        set_actuator(control_nf, OUTPUT_DUMP_WATER_FLOW_ACTUATOR);
+
         timer_delay(CONVERT_MS_TO_NS(THREAD_LEVEL_CONTROLLER_PERIOD_MS));
     }
 }
