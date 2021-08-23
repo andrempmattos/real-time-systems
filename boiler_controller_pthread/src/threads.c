@@ -52,35 +52,27 @@ void threads_init(void) {
 void thread_temp_controller(void) {
 
     /* Variables to */
-    float boiler_water_temp, input_water_temp;
+    float boiler_water_temp;
 
     /* Variables to hold the controller structures for each control loop */
-    float control_na, control_q, control_ni;
+    float control_na, control_q;
 
     /* Boiler temperature controllers initialization */
     controller_t na_control = controller_init("Na", "temperature", 10.0, 0.0, 500.0, 0.5);
-    controller_t ni_control = controller_init("Ni", "temperature", 100.0, 0.0, -500.0, 0.5);
     controller_t q_control = controller_init("Q", "temperature", 1000000.0, 0.0, 10000000.0, 0.5);
 
     while(1) {
 
         /* Get sensor values */
         boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
-        input_water_temp = get_sensor(INPUT_SUPPLY_WATER_TEMP_SENSOR);
 
         /* Get control action */
         control_na = pi_algorithm(&na_control, TEMP_SET_POINT, boiler_water_temp);
         control_q = pi_algorithm(&q_control, TEMP_SET_POINT, boiler_water_temp);
-        if(input_water_temp < boiler_water_temp){
-            control_ni = pi_algorithm(&ni_control, TEMP_SET_POINT, boiler_water_temp);
-        } else {
-            control_ni = 0;
-        }
 
         /* Set actuators based on the control action */
         set_actuator(control_na, INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR);
         set_actuator(control_q, INPUT_HEAT_FLOW_ACTUATOR);
-        set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
         
         timer_delay(CONVERT_MS_TO_NS(THREAD_TEMP_CONTROLLER_PERIOD_MS));
     }
