@@ -23,20 +23,29 @@ void timer_init(void) {
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sys_time, NULL);
 }
 
+//void timer_get_time(void) {
+//
+//    /* Get the current system time */
+//    clock_gettime(CLOCK_MONOTONIC, &sys_time);
+//}
 
-void timer_delay(long delay_ns) {	 
+
+void timer_delay(long delay_ns) {
+
+    struct timespec time; 
+    clock_gettime(CLOCK_MONOTONIC, &time); 
 
     /* Calculate wake up time */
-    sys_time.tv_nsec += delay_ns;
+    time.tv_nsec += delay_ns;
 
     /* Convert wake up time to the system time structure */
-    while(sys_time.tv_nsec >= NSEC_PER_SEC) {
-		sys_time.tv_nsec -= NSEC_PER_SEC;
-		sys_time.tv_sec++;
+    while(time.tv_nsec >= NSEC_PER_SEC) {
+		time.tv_nsec -= NSEC_PER_SEC;
+		time.tv_sec++;
     }
 	
 	/* Call for sleep function */
-	clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sys_time, NULL);
+	clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &time, NULL);
 }
 
 /** \} End of timer group */
