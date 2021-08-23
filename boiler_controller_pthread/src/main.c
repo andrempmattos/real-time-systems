@@ -15,7 +15,10 @@
 #include "logger.h"
 
 void task_init(void);
-void task_controller(void);
+void task_temp_controller(void);
+void task_level_controller(void);
+void task_warning_alarm(void);
+void task_user_input(void);
 void task_user_info(void);
 void task_logger_file(void);
 	
@@ -41,7 +44,8 @@ void main(void) {
 	while(1) {
 
 		/* 30ms, each cycle: Periodically run the controllers */
-		task_controller();
+		task_temp_controller();
+		task_level_controller();
 
 		/* 1s, each TICKS_TO_1_SECOND cycles: Periodically prints user information */
 		if(!(cycle%TICKS_TO_1_SECOND)) {
@@ -75,10 +79,7 @@ void task_init(void) {
 	timer_init();
 }
 
-void task_controller(void) {
-
-	/* Start controller response time timer */
-	logger_set_entry();
+void task_temp_controller(void) {
 
 	/* Get sensor values */
 	boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
@@ -97,9 +98,18 @@ void task_controller(void) {
 	set_actuator(control_na, INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR);
 	set_actuator(control_q, INPUT_HEAT_FLOW_ACTUATOR);
 	set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
+}
 
-	/* Finish controller response time timer */
-	logger_get_entry();
+void task_level_controller(void) {
+
+}
+
+void task_warning_alarm(void) {
+
+}
+
+void task_user_input(void) {
+
 }
 
 void task_user_info(void) {
@@ -109,7 +119,7 @@ void task_user_info(void) {
 }
 
 void task_logger_file(void) {
-	logger_save_file();
+	
 }
 
 /** \} End of main group */
