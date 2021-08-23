@@ -33,6 +33,9 @@ pthread_t thread_user_input_handler;
 pthread_t thread_user_info_handler;
 pthread_t thread_session_logger_handler;
 
+/* Mutex handler */
+pthread_mutex_t mut;
+
 void threads_init(void) {
 
     int status = 0;
@@ -46,6 +49,12 @@ void threads_init(void) {
 
     if (status != 0) {
         printf("CRITICAL: Error creating threads!\n");
+    }
+}
+
+void mutex_init(void) {
+    if (pthread_mutex_init(&mut, NULL) != 0) {
+        printf("CRITICAL: mutex init failed!\n");
     }
 }
 

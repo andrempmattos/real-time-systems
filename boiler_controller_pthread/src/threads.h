@@ -20,9 +20,10 @@
 //#define THREADS_INIT_DELAY_MS                   100     /**< Threads init delay period in ms. */     
 
 void threads_init(void);
+void mutex_init(void);
 
 extern pthread_t thread_user_input_handler;                                          
-
+extern pthread_mutex_t mut;
 
 #endif /* THREADS_H_ */
 

@@ -9,8 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "controller.h"
+#include "threads.h"
 
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
 	controller_t cont = {
@@ -45,6 +47,8 @@ float pi_algorithm(controller_t *cont, float reference, float control_variable) 
 
 float get_sensor(char *sensor) {
 
+    pthread_mutex_lock(&mut);
+
     char buffer[MAX_BUFFER_SIZE]; 
     float value = 0;
     int received_size = 0;
@@ -61,10 +65,14 @@ float get_sensor(char *sensor) {
         printf("Get sensor value failed!\n");
     }
 
+    pthread_mutex_unlock(&mut);
+
     return value;
 }
 
 void set_actuator(float value, char *actuator) {
+
+    pthread_mutex_lock(&mut);
 	
     char buffer[MAX_BUFFER_SIZE];
     char value_buffer[30];
@@ -78,6 +86,8 @@ void set_actuator(float value, char *actuator) {
     
     send_message(buffer);
     received_size = receive_message(buffer);
+
+    pthread_mutex_unlock(&mut);
 
     //if(received_size > 0) {
     //    buffer[received_size] = '\0';
