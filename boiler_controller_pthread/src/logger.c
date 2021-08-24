@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 #include <string.h>
 
@@ -23,7 +24,7 @@ void logger_init(void) {
     fclose(report);
 }
 
-void logger_add_entry(char *entry, int entry_size) {
+void logger_add_entry(char *entry, int entry_size, bool add_spacer) {
 
     int size = 0;
     char buffer[100];
@@ -36,6 +37,11 @@ void logger_add_entry(char *entry, int entry_size) {
     strcat(buffer, entry);
     strcat(buffer, "\n");
     strcat(log_buffer, buffer);
+
+    if (add_spacer == true)
+    {
+        strcat(log_buffer, "\n");
+    }
 }
 
 int logger_save_file(void) {
