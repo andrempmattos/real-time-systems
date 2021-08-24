@@ -20,11 +20,11 @@ void system_init(void) {
 	/* UDP interface initialization */
 	udp_init(SERVER_ADDRESS, SERVER_PORT);
 
-	/* Timer initialization */
-	timer_init();
-
 	/* User interface initialization */
 	user_interface_init();
+
+	/* Timer initialization */
+	timer_init();
 
 	/* Threads initialization */
 	threads_init();

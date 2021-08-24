@@ -17,7 +17,7 @@ void timer_init(void) {
     clock_gettime(CLOCK_MONOTONIC, &sys_time);
     
     /* Set an application initial start point 1 second ahead */
-    sys_time.tv_sec++;
+    sys_time.tv_sec+=2;
 
     /* Call for sleep function */
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sys_time, NULL);

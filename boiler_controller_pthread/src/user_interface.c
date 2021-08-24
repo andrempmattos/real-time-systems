@@ -22,6 +22,14 @@ pthread_mutex_t user_mut = PTHREAD_MUTEX_INITIALIZER;
 
 void user_interface_init(void) {
 
+	printf("\n");
+    printf("\n");
+    printf(" ___  ___  _  _    ___  ___    ___  ___  _ _  ___  ___  ___  _    _    ___  ___ \n");
+    printf("| . ]| . || || |  | __]| . \\  |  _]| . || \\ ||_ _|| . \\| . || |  | |  | __]| . \\ \n");
+    printf("| . \\| | || || |_ | _] |   /  | [__| | ||   | | | |   /| | || |_ | |_ | _] |   / \n");
+    printf("|___/`___'|_||___||___]|_\\_\\  `___/`___'|_\\_| |_| |_\\_\\`___'|___||___||___]|_\\_\\ \n");
+    printf("\n");
+
     printf("\nWelcome to the boiler controller!\n\n");
 
 	printf("The controller menu has the following options:\n");
