@@ -30,12 +30,25 @@ void user_interface_init(void) {
     printf("|___/`___'|_||___||___]|_\\_\\  `___/`___'|_\\_| |_| |_\\_\\`___'|___||___||___]|_\\_\\ \n");
     printf("\n");
 
-    printf("\nWelcome to the boiler controller!\n\n");
+    printf(ANSI_COLOR_GREEN "\nWelcome to the boiler controller!\n\n" ANSI_COLOR_RESET);
 
 	printf("The controller menu has the following options:\n");
-	printf("[0] enter [ref_temp] enter   -> to select the controller temperature set point \n");
-	printf("[1] enter [ref_height] enter -> to select the controller water height set point \n");    
-    printf("[s] -> to execute a clean exit procedure \n\n");
+	
+	printf(ANSI_COLOR_RED "[0] " ANSI_COLOR_RESET);
+	printf("enter ");
+	printf(ANSI_COLOR_RED "[ref_temp] " ANSI_COLOR_RESET);
+	printf("enter   ");
+	printf("-> to select the controller temperature set point \n");
+
+	printf(ANSI_COLOR_YELLOW "[1] " ANSI_COLOR_RESET);
+	printf("enter ");
+	printf(ANSI_COLOR_YELLOW "[ref_height] " ANSI_COLOR_RESET);
+	printf("enter ");    
+    printf("-> to select the controller water height set point \n");
+    
+    printf(ANSI_COLOR_BLUE "[s] " ANSI_COLOR_RESET);
+    printf("enter ");
+    printf("-> to execute a clean exit procedure \n\n");
 }
 
 void user_input_handler(void) {
