@@ -24,6 +24,7 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 extern pthread_mutex_t display_mut;
+extern pthread_mutex_t user_mut;
                                             
 void user_interface_init(void);
 void user_input_handler(void);

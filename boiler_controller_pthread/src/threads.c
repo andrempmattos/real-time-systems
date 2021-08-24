@@ -68,8 +68,10 @@ void thread_temp_controller(void) {
         boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
 
         /* Get control action */
-        control_na = pi_algorithm(&na_control, TEMP_SET_POINT, boiler_water_temp);
-        control_q = pi_algorithm(&q_control, TEMP_SET_POINT, boiler_water_temp);
+        pthread_mutex_lock(&user_mut);
+        control_na = pi_algorithm(&na_control, temp_set_point, boiler_water_temp);
+        control_q = pi_algorithm(&q_control, temp_set_point, boiler_water_temp);
+        pthread_mutex_unlock(&user_mut);
 
         /* Set actuators based on the control action */
         set_actuator(control_na, INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR);
@@ -97,8 +99,10 @@ void thread_level_controller(void) {
         boiler_water_height = get_sensor(BOILER_WATER_HEIGHT_SENSOR);
 
         /* Get control action */
-        control_ni = pi_algorithm(&ni_control, HEIGHT_SET_POINT, boiler_water_height);
-        control_nf = pi_algorithm(&nf_control, HEIGHT_SET_POINT, boiler_water_height);
+        pthread_mutex_lock(&user_mut);
+        control_ni = pi_algorithm(&ni_control, height_set_point, boiler_water_height);
+        control_nf = pi_algorithm(&nf_control, height_set_point, boiler_water_height);
+        pthread_mutex_unlock(&user_mut);
 
         /* Set actuators based on the control action */
         set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);

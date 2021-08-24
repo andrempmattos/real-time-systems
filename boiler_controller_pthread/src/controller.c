@@ -19,8 +19,8 @@ pthread_mutex_t socket_mut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t control_mut = PTHREAD_MUTEX_INITIALIZER;
 
 /* Set points for temperature and height */
-float TEMP_SET_POINT = 30;
-float HEIGHT_SET_POINT = 2;
+float temp_set_point = 30;
+float height_set_point = 2;
 
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
 	controller_t cont = {
