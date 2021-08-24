@@ -18,6 +18,7 @@
 
 /* Mutex handler */
 pthread_mutex_t display_mut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t user_mut = PTHREAD_MUTEX_INITIALIZER;
 
 void user_interface_init(void) {
 
@@ -39,12 +40,19 @@ void user_input_handler(void) {
 	if(strcmp(&menu_input, TEMPERATURE_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call temp set point update */
+		pthread_mutex_lock(&user_mut);
+		temp_set_point = value_input;
+		pthread_mutex_unlock(&user_mut);
 	}
 
 	if(strcmp(&menu_input, HEIGHT_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call height set point update */
+		pthread_mutex_lock(&user_mut);
+		height_set_point  = value_input;
+		pthread_mutex_unlock(&user_mut);
 	}
+
 
 	if(strcmp(&menu_input, STOP_COMMAND) == 0) {
 		/* Call clean termination procedure */

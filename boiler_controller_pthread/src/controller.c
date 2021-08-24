@@ -16,6 +16,11 @@
 
 /* Mutex handler */
 pthread_mutex_t socket_mut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t control_mut = PTHREAD_MUTEX_INITIALIZER;
+
+/* Set points for temperature and height */
+float temp_set_point = 30;
+float height_set_point = 2;
 
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
 	controller_t cont = {
@@ -33,6 +38,9 @@ controller_t controller_init(char *manipulated_variable, char *process_variable,
 }
 
 float pi_algorithm(controller_t *cont, float reference, float control_variable) {
+
+    pthread_mutex_lock(&control_mut);
+
     float error;
     float control_action;
 
@@ -44,6 +52,8 @@ float pi_algorithm(controller_t *cont, float reference, float control_variable) 
     } else if(control_action < cont->underflow){
         control_action = cont->underflow;
     }
+
+    pthread_mutex_unlock(&control_mut);
 
     return control_action;
 }
