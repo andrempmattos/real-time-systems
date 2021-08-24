@@ -38,6 +38,8 @@ void main(void) {
 	/* Critical system initialization */
 	system_init();
 
+	printf(ANSI_COLOR_RED "\nProgram terminated due to user input (exit code 0)!\n\n" ANSI_COLOR_RESET);
+
 	/* Only achieve here if user explicitily call a system termination procedure */
     exit(0);
 }

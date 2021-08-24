@@ -82,6 +82,7 @@ void user_input_handler(void) {
 
 	if(strcmp(&menu_input, STOP_COMMAND) == 0) {
 		/* Call clean termination procedure */
+		pthread_exit(0);
 	}
 }
 
@@ -108,22 +109,6 @@ void user_output_handler(void) {
 	memset(buffer, 0, 100);
 
 	size = sprintf(buffer, "BOILER_WATER_HEIGHT_SENSOR = %f", get_sensor(BOILER_WATER_HEIGHT_SENSOR));
-	logger_add_entry(buffer, size, false);
-	memset(buffer, 0, 100);
-
-	size = sprintf(buffer, "INPUT_SUPPLY_WATER_FLOW_ACTUATOR = %f", get_sensor(INPUT_SUPPLY_WATER_FLOW_ACTUATOR));
-	logger_add_entry(buffer, size, false);
-	memset(buffer, 0, 100);
-
-	size = sprintf(buffer, "INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR = %f", get_sensor(INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR));
-	logger_add_entry(buffer, size, false);
-	memset(buffer, 0, 100);
-
-	size = sprintf(buffer, "INPUT_HEAT_FLOW_ACTUATOR = %f", get_sensor(INPUT_HEAT_FLOW_ACTUATOR));
-	logger_add_entry(buffer, size, false);
-	memset(buffer, 0, 100);
-
-	size = sprintf(buffer, "OUTPUT_DUMP_WATER_FLOW_ACTUATOR = %f", get_sensor(OUTPUT_DUMP_WATER_FLOW_ACTUATOR));
 	logger_add_entry(buffer, size, true);
 	memset(buffer, 0, 100);
 
