@@ -52,7 +52,7 @@ void threads_init(void) {
 
 void thread_temp_controller(void) {
 
-    /* Variables to */
+    /* Variable to hold the water temperature */
     float boiler_water_temp;
 
     /* Variables to hold the controller structures for each control loop */
@@ -77,12 +77,11 @@ void thread_temp_controller(void) {
         
         timer_delay(CONVERT_MS_TO_NS(THREAD_TEMP_CONTROLLER_PERIOD_MS));
     }
-
 }
 
 void thread_level_controller(void) {
 
-    /* Initialization */
+    /* Variable to hold the water height */
     float boiler_water_height;
 
     /* Variables to hold the controller structures for each control loop */
@@ -129,6 +128,9 @@ void thread_warning_alarm(void) {
         if(get_sensor(BOILER_WATER_TEMP_SENSOR) >= 30) {
             if(!alert_sent) {
                 /* Call warning temp alert */
+                pthread_mutex_lock(&display_mut);
+                printf(ANSI_COLOR_RED "\n\nWARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET);
+                pthread_mutex_unlock(&display_mut);
                 alert_sent = true;
             }
         }
@@ -141,14 +143,12 @@ void thread_warning_alarm(void) {
 }
 
 void thread_user_input(void) {
-
     while(1) {
         user_input_handler();
     }
 }
 
 void thread_user_info(void) {
-    
     while(1) {
         user_output_handler();
         timer_delay(CONVERT_MS_TO_NS(THREAD_USER_INFO_PERIOD_MS));
@@ -157,9 +157,11 @@ void thread_user_info(void) {
 
 void thread_session_logger(void) {
     
-    /* Initialization */
+    /* Logger initialization */
+    logger_init();
 
     while(1) {
+        logger_save_file();
         timer_delay(CONVERT_MS_TO_NS(THREAD_SESSION_LOGGER_PERIOD_MS));
     }
 }
