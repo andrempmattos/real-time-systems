@@ -48,6 +48,9 @@ void user_input_handler(void) {
 	if(strcmp(&menu_input, TEMPERATURE_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call temp set point update */
+		pthread_mutex_lock(&display_mut);
+		printf(ANSI_COLOR_RED "Temperature set point command sent: %f \n\n" ANSI_COLOR_RESET, value_input);
+		pthread_mutex_unlock(&display_mut);
 		pthread_mutex_lock(&user_mut);
 		temp_set_point = value_input;
 		pthread_mutex_unlock(&user_mut);
@@ -56,11 +59,13 @@ void user_input_handler(void) {
 	if(strcmp(&menu_input, HEIGHT_SET_POINT_COMMAND) == 0) {
 		scanf("%f", &value_input);
 		/* Call height set point update */
+		pthread_mutex_lock(&display_mut);
+		printf(ANSI_COLOR_RED "Height set point command sent: %f \n\n" ANSI_COLOR_RESET, value_input);
+		pthread_mutex_unlock(&display_mut);
 		pthread_mutex_lock(&user_mut);
 		height_set_point  = value_input;
 		pthread_mutex_unlock(&user_mut);
 	}
-
 
 	if(strcmp(&menu_input, STOP_COMMAND) == 0) {
 		/* Call clean termination procedure */
