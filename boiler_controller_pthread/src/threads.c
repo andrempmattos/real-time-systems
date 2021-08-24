@@ -83,8 +83,8 @@ void thread_temp_controller(void) {
 
 void thread_level_controller(void) {
 
-    /* Variable to hold the water height */
-    float boiler_water_height;
+    /* Variables to hold the water height and temp */
+    float boiler_water_height, boiler_water_temp;
 
     /* Variables to hold the controller structures for each control loop */
     float control_ni, control_nf;
@@ -97,6 +97,7 @@ void thread_level_controller(void) {
         
         /* Get sensor values */
         boiler_water_height = get_sensor(BOILER_WATER_HEIGHT_SENSOR);
+        boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
 
         /* Get control action */
         pthread_mutex_lock(&user_mut);
@@ -105,8 +106,14 @@ void thread_level_controller(void) {
         pthread_mutex_unlock(&user_mut);
 
         /* Set actuators based on the control action */
-        set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
-        set_actuator(control_nf, OUTPUT_DUMP_WATER_FLOW_ACTUATOR);
+        if (boiler_water_temp > temp_set_point) {
+            set_actuator(10.0, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
+            set_actuator(10.0, OUTPUT_DUMP_WATER_FLOW_ACTUATOR);
+        } else {
+            set_actuator(control_ni, INPUT_SUPPLY_WATER_FLOW_ACTUATOR);
+            set_actuator(control_nf, OUTPUT_DUMP_WATER_FLOW_ACTUATOR);
+        }
+        
 
         timer_delay(CONVERT_MS_TO_NS(THREAD_LEVEL_CONTROLLER_PERIOD_MS));
     }
