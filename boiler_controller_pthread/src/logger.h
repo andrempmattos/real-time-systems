@@ -14,7 +14,7 @@
 #define FILE_BUFFER_SIZE        10000
 
 void logger_init(void);
-void logger_add_entry(char *entry, int entry_size, bool add_spacer);
+void logger_add_entry(char *entry, int entry_size, bool finish_session);
 int logger_save_file(void);
 
 #endif /* LOGGER_H_ */
