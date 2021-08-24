@@ -70,7 +70,7 @@ int send_message(char *buffer) {
 
     /* Send message to the server */
     if (sendto(local_socket, buffer, strlen(buffer)+1, 0, (struct sockaddr *)&server_socket, sizeof(server_socket)) < 0 ) { 
-        perror("sendto");
+        //perror("sendto");
 
         /* Try to solve the problem by resetting socket */
         close(local_socket);
@@ -90,7 +90,7 @@ int receive_message(char *buffer) {
     /* Espera pela msg de resposta do servidor */
     received_bytes = recvfrom(local_socket, buffer, MAX_BUFFER_SIZE, 0, NULL, 0);
     if (received_bytes <= 0) {
-        perror("recvfrom");
+        //perror("recvfrom");
 
         /* Try to solve the problem by resetting socket */
         close(local_socket);
