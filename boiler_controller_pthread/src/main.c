@@ -35,7 +35,7 @@ void system_init(void) {
 
 void main(void) {
 	
-	/* System initialization */
+	/* Critical system initialization */
 	system_init();
 
 	/* Only achieve here if user explicitily call a system termination procedure */
