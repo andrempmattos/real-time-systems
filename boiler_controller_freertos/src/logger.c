@@ -14,7 +14,7 @@
 #include <string.h>
 #include <pthread.h>
 
-#include "logger.h"
+#include "../inc/logger.h"
 
 char log_buffer_0[FILE_BUFFER_SIZE];
 char log_buffer_1[FILE_BUFFER_SIZE];

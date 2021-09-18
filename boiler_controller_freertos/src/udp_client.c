@@ -7,7 +7,7 @@
  * \{
  */
 
-#include "udp_client.h"
+#include "../inc/udp_client.h"
 
 int local_socket;
 struct sockaddr_in server_socket;

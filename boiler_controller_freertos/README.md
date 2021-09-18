@@ -1,6 +1,4 @@
-# Boiler controller (POSIX threads implementation)
-
-
+# Boiler controller (FreeRTOS implementation)
 
 ### Usage:
 
@@ -11,9 +9,7 @@ For deployment: `(java -jar boiler_emulator/boiler_emulator.jar 8000 &) && make 
 ### Description:
 [Description](http://www.romulosilvadeoliveira.eng.br/livrotemporeal/Trabalhos/controle-caldeira-2.pdf)
 
-[VÍDEO: Descrição do Trabalho 2: Controlador da caldeira com várias threads](https://www.youtube.com/watch?v=cLVTDSLXTCY)
-
-[VÍDEO: 13.5. Mecanismos de Sincronização Variáveis Compartilhadas (parte 5 de 5) - Exemplo Buffer Duplo](https://www.youtube.com/watch?v=y5aa-NQ7TQ4)
+[Repositório tutorial - cŕedito @alankc](https://github.com/alankc/FreeRTOS_Posix_Socket)
 
 
 ### Requirements:
@@ -36,29 +32,33 @@ Cuidado com a formatação dos valores em ponto flutuante.
 
 Implementar em C no Linux o programa CONTROLADOR, o qual deve incluir as seguintes funcionalidades de controle:
 
+Implementar em C usando FreeRTOS Posix o programa CONTROLADOR, o qual deve incluir as seguintes funcionalidades de controle:
 - Laço de controle como tarefa periódica para a temperatura;
 - Laço de controle como tarefa periódica para o nível (pode considerar estratégias separadas e não multivariável);
 - Uso do tanque auxiliar e da saída de água;
 - Informações na tela sobre a situação corrente;
 - Verificação da temperatura a cada 10ms para disparo de tarefa de alarme caso esteja acima de 30 graus.
-- Entrada através do teclado dos valores de referência para nível e temperatura;
-- Armazenagem periódica dos valores lidos de temperatura e armazenagem desses dados em arquivo, através de buffer duplo (produtor/consumidor).
+Essa funcionalidade deve ser implementada utilizando notificações do freeRTOS (Documentação: https://www.freertos.org/RTOS-task-notifications.html)
+- Valores de referência para nível e temperatura devem ser configurados no próprio código;
+- Armazenagem periódica dos dez últimos valores lidos de temperatura. Apresentar a média destes valores na tela e conjunto com os demais dados.
+- Medir o tempo em segundos para o sistema sair do estágio inicial e chegar a 5% do valor de referência para temperatura. Começar a apresentar este dado na tela apenas quando a caldeira alcançar 5% do valor de referência pela primeira vez. (Pode utilizar: xTaskGetTickCount())
 
 Outros requisitos:
 - Usar mutex para proteger as variáveis compartilhadas;
-- Tarefas periódicas implementadas com precisão e não com sleep fixo;
+- Tarefas periódicas devem ser implementadas utilizando a função vTaskDelayUntil;
 - Período do controlador de temperatura deve ser 50ms;
 - Período do controlador de nível deve ser 70ms;
-- Atualização da tela pode ser com sleep simples de 1 segundo.
+- Atualização da tela com período de 1 segundo.
+
 
 ### Grade composition:
 
 Alguns aspectos para a composição da nota do trabalho do controlador:
-- Fez no Linux, em C, usando a biblioteca das pthreads ?
+- Fez no Linux, em C, usando o freeRTOS Posix ?
 - Foi usado um mutex para cada estrutura compartilhada ?
 - A aplicação apresenta valores dos sensores na tela ?
 - A aplicação possui laços de controle para temperatura e nível ?
-- A aplicação acessa teclado durante a execução do controlador, afeta valor de referência ?
-- A aplicação grava leituras em arquivo ?
-- As tarefas de controle são realmente periódicas ?
+- A aplicação apresenta média dos últimos dez valores de temperatura lidos?
+- A aplicação mede o tempo para chegar a 5% do valor de referência e mostra na tela apenas no momento adequado?
 - Existe uma tarefa para o alarme ?
+- Implementou o alarme utilizando notificação no freeRTOS?

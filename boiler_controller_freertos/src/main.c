@@ -10,10 +10,10 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#include "udp_client.h"
-#include "timer.h"
-#include "user_interface.h"
-#include "threads.h"
+#include "../inc/udp_client.h"
+#include "../inc/timer.h"
+#include "../inc/user_interface.h"
+#include "../inc/threads.h"
 
 void system_init(void) {
 

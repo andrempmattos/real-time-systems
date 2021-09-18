@@ -11,11 +11,11 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-#include "threads.h"
-#include "timer.h"
-#include "controller.h"
-#include "logger.h"
-#include "user_interface.h"
+#include "../inc/threads.h"
+#include "../inc/timer.h"
+#include "../inc/controller.h"
+#include "../inc/logger.h"
+#include "../inc/user_interface.h"
 
 /* Threads functions */
 void thread_temp_controller(void);

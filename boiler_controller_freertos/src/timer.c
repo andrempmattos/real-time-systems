@@ -7,7 +7,7 @@
  * \{
  */
 
-#include "timer.h"
+#include "../inc/timer.h"
 
 struct timespec sys_time;
 

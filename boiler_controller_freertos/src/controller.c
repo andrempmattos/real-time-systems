@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#include "controller.h"
-#include "threads.h"
+#include "../inc/controller.h"
+#include "../inc/threads.h"
 
 /* Mutex handler */
 pthread_mutex_t socket_mut = PTHREAD_MUTEX_INITIALIZER;

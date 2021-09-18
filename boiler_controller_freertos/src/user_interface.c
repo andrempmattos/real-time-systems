@@ -12,9 +12,9 @@
 #include <time.h>
 #include <pthread.h>
 
-#include "controller.h"
-#include "logger.h"
-#include "user_interface.h"
+#include "../inc/controller.h"
+#include "../inc/logger.h"
+#include "../inc/user_interface.h"
 
 /* Mutex handler */
 pthread_mutex_t display_mut = PTHREAD_MUTEX_INITIALIZER;
