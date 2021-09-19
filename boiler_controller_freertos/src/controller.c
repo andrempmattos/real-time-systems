@@ -15,8 +15,8 @@
 #include "../inc/console.h"
 
 /* Set points for temperature and height */
-float temp_set_point = 30;
-float height_set_point = 2;
+float temp_set_point = TEMP_SET_POINT_INIT;
+float height_set_point = HEIGHT_SET_POINT_INIT;
 
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
     controller_t cont = {
@@ -65,7 +65,7 @@ float get_sensor(char *sensor) {
         value = atof(buffer);
     }
     else {
-        console_print("Get sensor value failed!\n");
+        //console_print("Get sensor value failed!\n");
     }
 
     return value;
