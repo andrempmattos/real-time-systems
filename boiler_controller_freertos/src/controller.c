@@ -7,23 +7,19 @@
  * \{
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
+#include <FreeRTOS.h>
+#include <semphr.h>
 
 #include "../inc/controller.h"
-#include "../inc/threads.h"
-
-/* Mutex handler */
-pthread_mutex_t socket_mut = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t control_mut = PTHREAD_MUTEX_INITIALIZER;
+#include "../inc/tasks.h"
+#include "../inc/console.h"
 
 /* Set points for temperature and height */
 float temp_set_point = 30;
 float height_set_point = 2;
 
 controller_t controller_init(char *manipulated_variable, char *process_variable, float overflow, float underflow, float ku, float pu) {
-	controller_t cont = {
+    controller_t cont = {
         .manipulated_variable = manipulated_variable,
         .process_variable = process_variable,
         .overflow = overflow,
@@ -39,8 +35,6 @@ controller_t controller_init(char *manipulated_variable, char *process_variable,
 
 float pi_algorithm(controller_t *cont, float reference, float control_variable) {
 
-    pthread_mutex_lock(&control_mut);
-
     float error;
     float control_action;
 
@@ -53,14 +47,10 @@ float pi_algorithm(controller_t *cont, float reference, float control_variable) 
         control_action = cont->underflow;
     }
 
-    pthread_mutex_unlock(&control_mut);
-
     return control_action;
 }
 
 float get_sensor(char *sensor) {
-
-    pthread_mutex_lock(&socket_mut);
 
     char buffer[MAX_BUFFER_SIZE]; 
     float value = 0;
@@ -75,18 +65,14 @@ float get_sensor(char *sensor) {
         value = atof(buffer);
     }
     else {
-        printf("Get sensor value failed!\n");
+        console_print("Get sensor value failed!\n");
     }
-
-    pthread_mutex_unlock(&socket_mut);
 
     return value;
 }
 
 void set_actuator(float value, char *actuator) {
 
-    pthread_mutex_lock(&socket_mut);
-	
     char buffer[MAX_BUFFER_SIZE];
     char value_buffer[30];
     int received_size = 0;
@@ -99,17 +85,6 @@ void set_actuator(float value, char *actuator) {
     
     send_message(buffer);
     received_size = receive_message(buffer);
-
-    pthread_mutex_unlock(&socket_mut);
-
-    //if(received_size > 0) {
-    //    buffer[received_size] = '\0';
-    //    memcpy(buffer, buffer+3, received_size+1-3); 
-    //    confirm_value = atof(buffer);
-    //}
-    //if(value != confirm_value) {
-    //    printf("Server did not receive the correct command!\n");
-    //}
 }
 
 /** \} End of controller group */

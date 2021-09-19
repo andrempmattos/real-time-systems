@@ -1,57 +1,41 @@
 /**
- * \brief Threads implementation.
+ * \brief Tasks implementation.
  * 
  * \date 2021/08/22
  * 
- * \addtogroup threads
+ * \addtogroup tasks
  * \{
  */
 
-#include <stdio.h>
 #include <stdbool.h>
-#include <pthread.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
-#include "../inc/threads.h"
-#include "../inc/timer.h"
+#include "../inc/tasks.h"
 #include "../inc/controller.h"
 #include "../inc/logger.h"
+#include "../inc/console.h"
 #include "../inc/user_interface.h"
 
-/* Threads functions */
-void thread_temp_controller(void);
-void thread_level_controller(void);
-void thread_warning_alarm(void);
-void thread_user_input(void);
-void thread_user_info(void);
-void thread_session_logger(void);
+/* Task functions */
+void task_temp_controller(void *pvParameters);
+void task_level_controller(void *pvParameters);
+void task_warning_alarm(void *pvParameters);
+void task_user_info(void *pvParameters);
+void task_session_logger(void *pvParameters);
 
-/* Threads handlers */
-pthread_t thread_temp_controller_handler;
-pthread_t thread_level_controller_handler;
-pthread_t thread_warning_alarm_handler;
-pthread_t thread_user_input_handler;
-pthread_t thread_user_info_handler;
-pthread_t thread_session_logger_handler;
-
-
-void threads_init(void) {
-
-    int status = 0;
-
-    status |= pthread_create(&thread_temp_controller_handler, NULL, (void *)thread_temp_controller, NULL);
-    status |= pthread_create(&thread_level_controller_handler, NULL, (void *)thread_level_controller, NULL);
-    status |= pthread_create(&thread_warning_alarm_handler, NULL, (void *)thread_warning_alarm, NULL);
-    status |= pthread_create(&thread_user_input_handler, NULL, (void *)thread_user_input, NULL);
-    status |= pthread_create(&thread_user_info_handler, NULL, (void *)thread_user_info, NULL);
-    status |= pthread_create(&thread_session_logger_handler, NULL, (void *)thread_session_logger, NULL);
-
-    if (status != 0) {
-        printf("CRITICAL: Error creating threads!\n");
-    }
+void create_tasks(void) {
+    //xTaskCreate(&task_temp_controller, TASK_TEMP_CONTROLLER_NAME, TASK_TEMP_CONTROLLER_STACK_SIZE, NULL, TASK_TEMP_CONTROLLER_PRIORITY, NULL);
+    //xTaskCreate(&task_level_controller, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, NULL);
+    //xTaskCreate(&task_warning_alarm, TASK_WARNING_ALERT_NAME, TASK_WARNING_ALERT_STACK_SIZE, NULL, TASK_WARNING_ALERT_PRIORITY, NULL);
+    xTaskCreate(&task_user_info, TASK_USER_INFO_NAME, TASK_USER_INFO_STACK_STACK_SIZE, NULL, TASK_USER_INFO_PRIORITY, NULL);
+    //xTaskCreate(&task_session_logger, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, NULL);
 }
 
-void thread_temp_controller(void) {
-
+void task_temp_controller(void *pvParameters) {
+    
+    TickType_t last_cycle = xTaskGetTickCount();
+    
     /* Variable to hold the water temperature */
     float boiler_water_temp;
 
@@ -68,21 +52,21 @@ void thread_temp_controller(void) {
         boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
 
         /* Get control action */
-        pthread_mutex_lock(&user_mut);
         control_na = pi_algorithm(&na_control, temp_set_point, boiler_water_temp);
         control_q = pi_algorithm(&q_control, temp_set_point, boiler_water_temp);
-        pthread_mutex_unlock(&user_mut);
 
         /* Set actuators based on the control action */
         set_actuator(control_na, INPUT_SUPPLY_HOT_WATER_FLOW_ACTUATOR);
         set_actuator(control_q, INPUT_HEAT_FLOW_ACTUATOR);
         
-        timer_delay(CONVERT_MS_TO_NS(THREAD_TEMP_CONTROLLER_PERIOD_MS));
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_TEMP_CONTROLLER_PERIOD_MS));
     }
 }
 
-void thread_level_controller(void) {
-
+void task_level_controller(void *pvParameters) {
+    
+    TickType_t last_cycle = xTaskGetTickCount();
+    
     /* Variables to hold the water height and temp */
     float boiler_water_height, boiler_water_temp;
 
@@ -100,10 +84,8 @@ void thread_level_controller(void) {
         boiler_water_temp = get_sensor(BOILER_WATER_TEMP_SENSOR);
 
         /* Get control action */
-        pthread_mutex_lock(&user_mut);
         control_ni = pi_algorithm(&ni_control, height_set_point, boiler_water_height);
         control_nf = pi_algorithm(&nf_control, height_set_point, boiler_water_height);
-        pthread_mutex_unlock(&user_mut);
 
         /* Set actuators based on the control action */
         if (boiler_water_temp > temp_set_point) {
@@ -114,13 +96,14 @@ void thread_level_controller(void) {
             set_actuator(control_nf, OUTPUT_DUMP_WATER_FLOW_ACTUATOR);
         }
         
-
-        timer_delay(CONVERT_MS_TO_NS(THREAD_LEVEL_CONTROLLER_PERIOD_MS));
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_LEVEL_CONTROLLER_PERIOD_MS));
     }
 }
 
-void thread_warning_alarm(void) {
-
+void task_warning_alarm(void *pvParameters) {
+    
+    TickType_t last_cycle = xTaskGetTickCount();
+    
     bool alert_sent = false;
     
     float init_temp   = get_sensor(BOILER_WATER_TEMP_SENSOR);
@@ -139,9 +122,7 @@ void thread_warning_alarm(void) {
         if(get_sensor(BOILER_WATER_TEMP_SENSOR) >= 30) {
             if(!alert_sent) {
                 /* Call warning temp alert */
-                pthread_mutex_lock(&display_mut);
-                printf(ANSI_COLOR_RED "\n\nWARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET);
-                pthread_mutex_unlock(&display_mut);
+                console_print(ANSI_COLOR_RED "\n\nWARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET);
                 alert_sent = true;
             }
         }
@@ -149,34 +130,36 @@ void thread_warning_alarm(void) {
             alert_sent = false;
         }
 
-        timer_delay(CONVERT_MS_TO_NS(THREAD_WARNING_ALERT_PERIOD_MS));
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_WARNING_ALERT_PERIOD_MS));
     }
 }
 
-void thread_user_input(void) {
-    while(1) {
-        user_input_handler();
-    }
-}
+void task_user_info(void *pvParameters) {
 
-void thread_user_info(void) {
+    TickType_t last_cycle = xTaskGetTickCount();
+    
     while(1) {
         user_output_handler();
-        timer_delay(CONVERT_MS_TO_NS(THREAD_USER_INFO_PERIOD_MS));
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_USER_INFO_PERIOD_MS));
     }
 }
 
-void thread_session_logger(void) {
+void task_session_logger(void *pvParameters) {
+    
+    TickType_t last_cycle = xTaskGetTickCount();
     
     /* Logger initialization */
     logger_init();
 
     while(1) {
         logger_save_file();
-        timer_delay(CONVERT_MS_TO_NS(THREAD_SESSION_LOGGER_PERIOD_MS));
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_SESSION_LOGGER_PERIOD_MS));
     }
 }
 
- 
+/** \} End of threads group */ 
 
-/** \} End of threads group */
+
+
+
+ 

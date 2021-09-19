@@ -58,6 +58,8 @@ float pi_algorithm(controller_t *cont, float reference, float control_variable);
  * \brief Get the sensor value.
  *
  * \param[in] sensor is the sensor to be read.
+ * 
+ * \return the read sensor value.
  */
 float get_sensor(char *sensor);
 
