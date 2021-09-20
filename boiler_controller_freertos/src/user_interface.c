@@ -15,6 +15,7 @@
 #include "../inc/console.h"
 #include "../inc/logger.h"
 #include "../inc/user_interface.h"
+#include "../inc/tasks.h"
 
 void user_interface_init(void) {
 
@@ -55,6 +56,25 @@ void user_output_handler(void) {
         xTaskGetTickCount(), 
         get_sensor(BOILER_WATER_HEIGHT_SENSOR)
     );
+
+    console_print(
+        ANSI_COLOR_GREEN "[%lu]: " ANSI_COLOR_RESET 
+        "Boiler water average temperature: " 
+        ANSI_COLOR_GREEN  "%f\n" ANSI_COLOR_RESET, 
+        xTaskGetTickCount(), 
+        avg_temp
+    );
+
+    if(close_temp_arrived){
+        console_print(
+            ANSI_COLOR_GREEN "[%lu]: " ANSI_COLOR_RESET 
+            "Time in seconds to arrive in 0.95 of setpoint: " 
+            ANSI_COLOR_GREEN  "%lu\n" ANSI_COLOR_RESET, 
+            xTaskGetTickCount(), 
+            time_to_close_temp
+        );
+    }
+    
 }
 
 /** \} End of user_interface group */

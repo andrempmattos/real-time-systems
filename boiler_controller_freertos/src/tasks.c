@@ -23,14 +23,27 @@ void task_level_controller(void *pvParameters);
 void task_warning_alarm(void *pvParameters);
 void task_user_info(void *pvParameters);
 void task_session_logger(void *pvParameters);
+void task_temp_reader(void *pvParameters);
+
+TaskHandle_t x_temp_controller_handle = NULL;
+TaskHandle_t x_level_controller_handle = NULL;
+TaskHandle_t x_warning_alarm_handle = NULL;
+TaskHandle_t x_user_info_handle = NULL;
+TaskHandle_t x_session_logger_handle = NULL;
+TaskHandle_t x_temp_reader_handle = NULL;
 
 void create_tasks(void) {
-    xTaskCreate(&task_temp_controller, TASK_TEMP_CONTROLLER_NAME, TASK_TEMP_CONTROLLER_STACK_SIZE, NULL, TASK_TEMP_CONTROLLER_PRIORITY, NULL);
-    xTaskCreate(&task_level_controller, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, NULL);
-    xTaskCreate(&task_warning_alarm, TASK_WARNING_ALERT_NAME, TASK_WARNING_ALERT_STACK_SIZE, NULL, TASK_WARNING_ALERT_PRIORITY, NULL);
-    xTaskCreate(&task_user_info, TASK_USER_INFO_NAME, TASK_USER_INFO_STACK_STACK_SIZE, NULL, TASK_USER_INFO_PRIORITY, NULL);
-    xTaskCreate(&task_session_logger, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, NULL);
+    xTaskCreate(&task_temp_controller, TASK_TEMP_CONTROLLER_NAME, TASK_TEMP_CONTROLLER_STACK_SIZE, NULL, TASK_TEMP_CONTROLLER_PRIORITY, &x_temp_controller_handle);
+    xTaskCreate(&task_level_controller, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, &x_level_controller_handle);
+    xTaskCreate(&task_warning_alarm, TASK_WARNING_ALERT_NAME, TASK_WARNING_ALERT_STACK_SIZE, NULL, TASK_WARNING_ALERT_PRIORITY, &x_warning_alarm_handle);
+    xTaskCreate(&task_user_info, TASK_USER_INFO_NAME, TASK_USER_INFO_STACK_STACK_SIZE, NULL, TASK_USER_INFO_PRIORITY, &x_user_info_handle);
+    xTaskCreate(&task_session_logger, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, &x_session_logger_handle);
+    xTaskCreate(&task_temp_reader, TASK_TEMP_READER_NAME, TASK_TEMP_READER_STACK_SIZE, NULL, TASK_TEMP_READER_PRIORITY, &x_temp_reader_handle);
 }
+
+float avg_temp = 0;
+TickType_t time_to_close_temp;
+int close_temp_arrived = 0;
 
 void task_temp_controller(void *pvParameters) {
     
@@ -101,36 +114,23 @@ void task_level_controller(void *pvParameters) {
 }
 
 void task_warning_alarm(void *pvParameters) {
-    
-    TickType_t last_cycle = xTaskGetTickCount();
-    
+
     bool alert_sent = false;
-    
-    float init_temp   = get_sensor(BOILER_WATER_TEMP_SENSOR);
-    float init_height = get_sensor(BOILER_WATER_HEIGHT_SENSOR);
-
-    if((init_temp > 70) || (init_temp < 0)) {
-        /* Call critical temp alert/routine */
-    }
-
-    if((init_height > 5) || (init_height < 0.1)) {
-        /* Call critical height alert/routine */
-    }
+    static uint32_t thread_notification;
 
     while(1) {
+        thread_notification = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-        if(get_sensor(BOILER_WATER_TEMP_SENSOR) >= 30) {
+        if(thread_notification){
             if(!alert_sent) {
                 /* Call warning temp alert */
                 console_print(ANSI_COLOR_RED "\n\nWARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET);
                 alert_sent = true;
             }
+            else {
+                alert_sent = false;
+            }
         }
-        else {
-            alert_sent = false;
-        }
-
-        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_WARNING_ALERT_PERIOD_MS));
     }
 }
 
@@ -154,6 +154,48 @@ void task_session_logger(void *pvParameters) {
     while(1) {
         logger_save_file();
         vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_SESSION_LOGGER_PERIOD_MS));
+    }
+}
+
+void task_temp_reader(void *pvParameters) {
+
+    float boiler_water_temp_a;
+    TickType_t last_cycle = xTaskGetTickCount(); 
+    float arr_last_ten_temp[10] = { 0 };
+    int pointer_arr = 0;
+    float sum_temp = 0.0;
+
+    while(1) {
+
+        /* Get sensor values */
+        boiler_water_temp_a = get_sensor(BOILER_WATER_TEMP_SENSOR);
+
+        if(boiler_water_temp_a >= 30) {
+            /* Call temp alert task with notification */
+            xTaskNotifyGive(x_warning_alarm_handle);
+        }
+        
+        /* Get ten last values and print average */
+        if(pointer_arr < 9) {
+            arr_last_ten_temp[pointer_arr] = boiler_water_temp_a;
+            pointer_arr++;
+        } else {
+            arr_last_ten_temp[pointer_arr] = boiler_water_temp_a;
+            pointer_arr = 0;
+        }
+
+        for (int i = 0; i < 10; i++) {
+            sum_temp += arr_last_ten_temp[i];
+        }
+        avg_temp = sum_temp / 10;
+        sum_temp = 0;
+
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_TEMP_READER_PERIOD_MS));
+
+        if (boiler_water_temp_a >= 0.95*temp_set_point && !close_temp_arrived) {
+            time_to_close_temp = last_cycle / 1000;
+            close_temp_arrived = 1;
+        }
     }
 }
 

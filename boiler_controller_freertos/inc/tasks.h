@@ -41,7 +41,19 @@
 #define TASK_SESSION_LOGGER_STACK_SIZE      4096
 #define TASK_SESSION_LOGGER_PRIORITY        1
 
+
+
+/* Session logger task parameters */
+#define TASK_TEMP_READER_NAME               "session_logger"
+#define TASK_TEMP_READER_PERIOD_MS          10 /**< Session logger task sleep period in ms. */   
+#define TASK_TEMP_READER_STACK_SIZE         512
+#define TASK_TEMP_READER_PRIORITY           4
+
 //#define TASKS_INIT_DELAY_MS               100     /**< Tasks init delay period in ms. */     
+
+extern float avg_temp;
+extern TickType_t time_to_close_temp;
+extern int close_temp_arrived;
 
 void create_tasks(void);
 
