@@ -34,9 +34,9 @@ This repository contains
 
 ## Repository Organization
 
-	- boiler_controller_loop: Implements a boiler controller using a cyclic executive design
-	- boiler_controller_pthread: Implements a boiler controller using pthreads (linux, almost real-time...)
-	- boiler_controller_freertos: Implements a boiler controller using a FreeRTOS simulator
+- boiler_controller_loop: Implements a boiler controller using a cyclic executive design
+- boiler_controller_pthread: Implements a boiler controller using pthreads (linux, almost real-time...)
+- boiler_controller_freertos: Implements a boiler controller using a FreeRTOS simulator
 
 ## License
 
@@ -44,14 +44,13 @@ This project is open-source under MIT license for firmware sources. Some third-p
 
 ## Releases
 
-	- "Trabalho 1": The delivered "boiler_controller_loop" implementation
-	- "Trabalho 2": The delivered "boiler_controller_pthread" implementation
-	- "Trabalho 3": The delivered "boiler_controller_freertos" implementation
+- "Trabalho 1": The delivered "boiler_controller_loop" implementation
+- "Trabalho 2": The delivered "boiler_controller_pthread" implementation
+- "Trabalho 3": The delivered "boiler_controller_freertos" implementation
 
 ## Notes
 
 **Contributors:**
 
-[Lukas Alberto Belck](https://github.com/lukasab) - Work partner (all implementations)
-	
-[Alan Kunz Cechinel](https://github.com/alankc) - Some tutorial sources for FreeRTOS
+- [Lukas Alberto Belck](https://github.com/lukasab) - Work partner (all implementations)	
+- [Alan Kunz Cechinel](https://github.com/alankc) - Some tutorial sources for FreeRTOS
