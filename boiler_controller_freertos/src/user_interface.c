@@ -65,7 +65,7 @@ void user_output_handler(void) {
         avg_temp
     );
 
-    if(close_temp_arrived){
+    if(close_temp_arrived) {
         console_print(
             ANSI_COLOR_GREEN "[%lu]: " ANSI_COLOR_RESET 
             "Time in seconds to arrive in 0.95 of setpoint: " 
@@ -75,6 +75,12 @@ void user_output_handler(void) {
         );
     }
     
+    if (alarm_temp) {
+        console_print(
+            ANSI_COLOR_GREEN "\n[%lu]: " ANSI_COLOR_RESET
+            ANSI_COLOR_RED "WARNING: Temperature alarm set!\n" ANSI_COLOR_RESET,
+            xTaskGetTickCount());
+    }
 }
 
 /** \} End of user_interface group */

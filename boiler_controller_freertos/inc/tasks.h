@@ -54,6 +54,7 @@
 extern float avg_temp;
 extern TickType_t time_to_close_temp;
 extern int close_temp_arrived;
+extern int alarm_temp;
 
 void create_tasks(void);
 

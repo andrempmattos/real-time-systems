@@ -44,6 +44,7 @@ void create_tasks(void) {
 float avg_temp = 0;
 TickType_t time_to_close_temp;
 int close_temp_arrived = 0;
+int alarm_temp = 0;
 
 void task_temp_controller(void *pvParameters) {
     
@@ -122,14 +123,7 @@ void task_warning_alarm(void *pvParameters) {
         thread_notification = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
         if(thread_notification){
-            if(!alert_sent) {
-                /* Call warning temp alert */
-                console_print(ANSI_COLOR_RED "\n\nWARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET);
-                alert_sent = true;
-            }
-            else {
-                alert_sent = false;
-            }
+            alarm_temp = 1;
         }
     }
 }
@@ -173,6 +167,8 @@ void task_temp_reader(void *pvParameters) {
         if(boiler_water_temp_a >= 30) {
             /* Call temp alert task with notification */
             xTaskNotifyGive(x_warning_alarm_handle);
+        } else {
+            alarm_temp = 0;
         }
         
         /* Get ten last values and print average */
@@ -190,18 +186,13 @@ void task_temp_reader(void *pvParameters) {
         avg_temp = sum_temp / 10;
         sum_temp = 0;
 
-        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_TEMP_READER_PERIOD_MS));
-
         if (boiler_water_temp_a >= 0.95*temp_set_point && !close_temp_arrived) {
             time_to_close_temp = last_cycle / 1000;
             close_temp_arrived = 1;
         }
+
+        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_TEMP_READER_PERIOD_MS));
     }
 }
 
 /** \} End of threads group */ 
-
-
-
-
- 
