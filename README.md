@@ -52,5 +52,6 @@ This project is open-source under MIT license for firmware sources. Some third-p
 
 **Contributors:**
 
-	- [Lukas Alberto Belck](https://github.com/lukasab) - Work partner (all implementations) 
-	- [Alan Kunz Cechinel](https://github.com/alankc) - Some tutorial sources for FreeRTOS
+[Lukas Alberto Belck](https://github.com/lukasab) - Work partner (all implementations)
+	
+[Alan Kunz Cechinel](https://github.com/alankc) - Some tutorial sources for FreeRTOS
