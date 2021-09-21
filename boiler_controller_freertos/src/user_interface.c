@@ -13,7 +13,6 @@
 
 #include "../inc/controller.h"
 #include "../inc/console.h"
-#include "../inc/logger.h"
 #include "../inc/user_interface.h"
 #include "../inc/tasks.h"
 
@@ -78,7 +77,7 @@ void user_output_handler(void) {
     if (alarm_temp) {
         console_print(
             ANSI_COLOR_GREEN "\n[%lu]: " ANSI_COLOR_RESET
-            ANSI_COLOR_RED "WARNING: Temperature alarm set!\n" ANSI_COLOR_RESET,
+            ANSI_COLOR_RED "WARNING: Temperature alarm set!\n\n" ANSI_COLOR_RESET,
             xTaskGetTickCount());
     }
 }

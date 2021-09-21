@@ -36,14 +36,6 @@
 #define TASK_USER_INFO_PRIORITY             2
 
 /* Session logger task parameters */
-#define TASK_SESSION_LOGGER_NAME            "session_logger"
-#define TASK_SESSION_LOGGER_PERIOD_MS       10000 /**< Session logger task sleep period in ms. */   
-#define TASK_SESSION_LOGGER_STACK_SIZE      4096
-#define TASK_SESSION_LOGGER_PRIORITY        1
-
-
-
-/* Session logger task parameters */
 #define TASK_TEMP_READER_NAME               "session_logger"
 #define TASK_TEMP_READER_PERIOD_MS          10 /**< Session logger task sleep period in ms. */   
 #define TASK_TEMP_READER_STACK_SIZE         512

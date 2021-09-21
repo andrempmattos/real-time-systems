@@ -13,7 +13,6 @@
 
 #include "../inc/tasks.h"
 #include "../inc/controller.h"
-#include "../inc/logger.h"
 #include "../inc/console.h"
 #include "../inc/user_interface.h"
 
@@ -29,7 +28,6 @@ TaskHandle_t x_temp_controller_handle = NULL;
 TaskHandle_t x_level_controller_handle = NULL;
 TaskHandle_t x_warning_alarm_handle = NULL;
 TaskHandle_t x_user_info_handle = NULL;
-TaskHandle_t x_session_logger_handle = NULL;
 TaskHandle_t x_temp_reader_handle = NULL;
 
 void create_tasks(void) {
@@ -37,7 +35,6 @@ void create_tasks(void) {
     xTaskCreate(&task_level_controller, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, &x_level_controller_handle);
     xTaskCreate(&task_warning_alarm, TASK_WARNING_ALERT_NAME, TASK_WARNING_ALERT_STACK_SIZE, NULL, TASK_WARNING_ALERT_PRIORITY, &x_warning_alarm_handle);
     xTaskCreate(&task_user_info, TASK_USER_INFO_NAME, TASK_USER_INFO_STACK_STACK_SIZE, NULL, TASK_USER_INFO_PRIORITY, &x_user_info_handle);
-    xTaskCreate(&task_session_logger, TASK_LEVEL_CONTROLLER_NAME, TASK_LEVEL_CONTROLLER_STACK_SIZE, NULL, TASK_LEVEL_CONTROLLER_PRIORITY, &x_session_logger_handle);
     xTaskCreate(&task_temp_reader, TASK_TEMP_READER_NAME, TASK_TEMP_READER_STACK_SIZE, NULL, TASK_TEMP_READER_PRIORITY, &x_temp_reader_handle);
 }
 
@@ -135,19 +132,6 @@ void task_user_info(void *pvParameters) {
     while(1) {
         user_output_handler();
         vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_USER_INFO_PERIOD_MS));
-    }
-}
-
-void task_session_logger(void *pvParameters) {
-    
-    TickType_t last_cycle = xTaskGetTickCount();
-    
-    /* Logger initialization */
-    logger_init();
-
-    while(1) {
-        logger_save_file();
-        vTaskDelayUntil(&last_cycle, pdMS_TO_TICKS(TASK_SESSION_LOGGER_PERIOD_MS));
     }
 }
 
